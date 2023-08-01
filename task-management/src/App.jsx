@@ -1,35 +1,63 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import {
+  Box,
+  Flex,
+  Avatar,
+  HStack,
+  Text,
+  IconButton,
+  Button,
+  Menu,
+  MenuButton,
+  MenuList,
+  MenuItem,
+  MenuDivider,
+  useDisclosure,
+  useColorModeValue,
+  Stack,
+} from "@chakra-ui/react";
+import { HamburgerIcon, CloseIcon, AddIcon } from "@chakra-ui/icons";
+import Tasks from "./component/Tasks";
+import "./App.css";
+import { useState } from "react";
+import CreateTask from "./component/CreateTask";
 
-function App() {
-  const [count, setCount] = useState(0)
+export default function NavBar() {
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const [label, setLabel] = useState("Create Task");
+  const [showTaskList, setShowTastList] = useState(true);
+
+  const createTask = () => {
+    setLabel("Task List");
+  };
 
   return (
     <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
-}
+      <Box bg={useColorModeValue("gray.100", "gray.900")} px={4}>
+        <Flex h={16} alignItems={"center"} justifyContent={"space-between"}>
+          <IconButton
+            size={"md"}
+            icon={isOpen ? <CloseIcon /> : <HamburgerIcon />}
+            aria-label={"Open Menu"}
+            display={{ md: "none" }}
+            onClick={isOpen ? onClose : onOpen}
+          />
+          <HStack spacing={8} alignItems={"center"}></HStack>
+          <Flex alignItems={"center"}>
+            <Button
+              variant={"solid"}
+              colorScheme={"teal"}
+              size={"sm"}
+              mr={4}
+              leftIcon={showTaskList ? <AddIcon /> : null}
+              onClick={() => setShowTastList(!showTaskList)}
+            >
+              {showTaskList ? "Create Tast" : "Task List"}
+            </Button>
+          </Flex>
+        </Flex>
+      </Box>
 
-export default App
+      <Box p={4}>{showTaskList ? <Tasks /> : <CreateTask />}</Box>
+    </>
+  );
+}
