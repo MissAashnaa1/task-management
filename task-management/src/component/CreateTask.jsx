@@ -6,11 +6,13 @@ import toast, { Toaster } from "react-hot-toast";
 
 const CreateTask = () => {
   const dispatch = useDispatch();
-
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
   const { isUpdate, updateID, editTaskObj } = useSelector(
     (state) => state.counter
+  );
+
+  const [title, setTitle] = useState(isUpdate ? editTaskObj.title : "");
+  const [description, setDescription] = useState(
+    isUpdate ? editTaskObj.description : ""
   );
 
   const handleFormSubmit = async (event) => {
@@ -54,6 +56,9 @@ const CreateTask = () => {
 
   const handleUpdateTask = async (event) => {
     event.preventDefault();
+
+    // console.log("update clicked")
+
     if (title.trim() === "" || description.trim() === "") {
       toast.error("Fields can not be empty.");
       setTitle(title.trim());
@@ -69,9 +74,11 @@ const CreateTask = () => {
           description,
         }
       );
-      // console.log(res.data);
+      console.log(res.data);
       if (res.data.success) {
         toast.success("Task updated.");
+      } else {
+        toast.error("Something went wrong!");
       }
     } catch (error) {
       console.log(error);
@@ -99,7 +106,7 @@ const CreateTask = () => {
             className="form-control outline-input"
             id="title"
             name="title"
-            value={isUpdate ? editTaskObj.title : title}
+            value={title}
             placeholder="Enter title"
             required
             onChange={(e) => setTitle(e.target.value)}
@@ -114,7 +121,7 @@ const CreateTask = () => {
             className="form-control outline-input"
             id="description"
             name="description"
-            value={isUpdate ? editTaskObj.description : description}
+            value={description}
             placeholder="Enter description"
             onChange={(e) => setDescription(e.target.value)}
           ></textarea>

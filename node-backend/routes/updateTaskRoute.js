@@ -4,7 +4,7 @@ const Task = require("../models/taskModel");
 const router = express.Router();
 
 router.route("/:id").put(async (req, res) => {
-  console.log(req.body, req.params.id);
+  // console.log(req.body, req.params.id);
 
   let task = await Task.findOne({ _id: req.params.id });
   // console.log(task, "update route");
