@@ -6,7 +6,10 @@ import {
   setIsUpdate,
   setShowTastList,
   setUpdateID,
+  setEditTaskObj,
 } from "../redux/counter";
+
+import toast, { Toaster } from "react-hot-toast";
 
 import { DeleteIcon, EditIcon } from "@chakra-ui/icons";
 
@@ -23,32 +26,42 @@ const TaskItem = ({ task }) => {
 
   const handleDelete = async (id) => {
     dispatch(setDltId(id));
-    console.log(id, "adsfasdff");
+    // console.log(id, "adsfasdff");
 
     try {
       let res = await axios.delete(
         `https://node-backend-8meu.onrender.com/api/delete-task/${id}`
       );
-      console.log(res.data);
+      // console.log(res.data);
+      if (res.data.sucess) {
+        toast.success("Task deleted.");
+      }
     } catch (err) {
       console.log(err);
+      toast.error("Something went wrong!");
     }
   };
 
   const handleEdit = async (id) => {
     // dispatch(setDltId(id));
-    console.log(id, "edit");
-    dispatch(setUpdateID(id));
-    dispatch(setIsUpdate(true));
-    dispatch(setShowTastList(!showTaskList));
+    // console.log(id, "edit");
 
     try {
       let res = await axios.get(
-        `https://node-backend-8meu.onrender.com/api/delete-task/${id}`
+        `https://node-backend-8meu.onrender.com/api/task/${id}`
       );
-      console.log(res.data);
+      // console.log(res.data);
+      if (res.data.success) {
+        dispatch(setEditTaskObj(res.data.task));
+        dispatch(setUpdateID(id));
+        dispatch(setIsUpdate(true));
+        dispatch(setShowTastList(!showTaskList));
+      } else {
+        toast.error("Something went wrong!");
+      }
     } catch (err) {
       console.log(err);
+      toast.error("Something went wrong!");
     }
   };
 
@@ -61,9 +74,10 @@ const TaskItem = ({ task }) => {
           status: status,
         }
       );
-      console.log(res.data);
+      // console.log(res.data);
     } catch (err) {
       console.log(err);
+      toast.error("Something went wrong!");
     }
   };
 
@@ -124,6 +138,17 @@ const TaskItem = ({ task }) => {
           </Button>
         </WrapItem>
       </Box>
+      <Toaster
+        toastOptions={{
+          // Define default options
+          className: "",
+          duration: 3000,
+          style: {
+            background: "#363636",
+            color: "#fff",
+          },
+        }}
+      />
     </div>
   );
 };

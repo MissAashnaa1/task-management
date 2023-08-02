@@ -6,6 +6,7 @@ const initialState = {
   showTaskList: true,
   isUpdate: false,
   updateID: null,
+  editTaskObj: null,
 };
 
 export const counterSlice = createSlice({
@@ -27,6 +28,9 @@ export const counterSlice = createSlice({
     setUpdateID: (state, action) => {
       state.updateID = action.payload;
     },
+    setEditTaskObj: (state, action) => {
+      state.editTaskObj = action.payload;
+    },
     appendTasksData: (state, action) => {
       state.tasksData = [...state.tasksData, action.payload];
     },
@@ -41,6 +45,7 @@ export const {
   setShowTastList,
   setIsUpdate,
   setUpdateID,
+  setEditTaskObj,
 } = counterSlice.actions;
 
 export default counterSlice.reducer;

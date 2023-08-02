@@ -22,10 +22,6 @@ export default function NavBar() {
 
   const dispatch = useDispatch();
 
-  const createTask = () => {
-    setLabel("Task List");
-  };
-
   return (
     <>
       <Box bg={useColorModeValue("gray.100", "gray.900")} px={4}>

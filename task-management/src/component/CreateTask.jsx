@@ -9,7 +9,9 @@ const CreateTask = () => {
 
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  const { isUpdate, updateID } = useSelector((state) => state.counter);
+  const { isUpdate, updateID, editTaskObj } = useSelector(
+    (state) => state.counter
+  );
 
   const handleFormSubmit = async (event) => {
     event.preventDefault();
@@ -30,7 +32,7 @@ const CreateTask = () => {
           status: false,
         }
       );
-      console.log(res.data);
+      // console.log(res.data);
       if (res.data.success) {
         const task = {
           _id: res.data.task._id,
@@ -43,6 +45,7 @@ const CreateTask = () => {
       }
     } catch (error) {
       console.log(error);
+      toast.error("Something went Wrong.");
     }
 
     setTitle("");
@@ -66,12 +69,13 @@ const CreateTask = () => {
           description,
         }
       );
-      console.log(res.data);
+      // console.log(res.data);
       if (res.data.success) {
         toast.success("Task updated.");
       }
     } catch (error) {
       console.log(error);
+      toast.error("Something went wrong!.");
     }
     setTitle("");
     setDescription("");
@@ -95,7 +99,7 @@ const CreateTask = () => {
             className="form-control outline-input"
             id="title"
             name="title"
-            value={title}
+            value={isUpdate ? editTaskObj.title : title}
             placeholder="Enter title"
             required
             onChange={(e) => setTitle(e.target.value)}
@@ -110,7 +114,7 @@ const CreateTask = () => {
             className="form-control outline-input"
             id="description"
             name="description"
-            value={description}
+            value={isUpdate ? editTaskObj.description : description}
             placeholder="Enter description"
             onChange={(e) => setDescription(e.target.value)}
           ></textarea>
