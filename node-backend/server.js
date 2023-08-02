@@ -1,14 +1,18 @@
 const express = require("express");
-// const dotenv = require("dotenv");
-// const connectDB = require("./config/db");
+const dotenv = require("dotenv");
+const connectDB = require("./config/db");
+
 const createTaskRoute = require("./routes/createTaskRoute");
 const getAllTasks = require("./routes/getAllTasksRoute");
 const updateTaskRoute = require("./routes/updateTaskRoute");
+const deleteTaskRoute = require("./routes/deleteTaskRoute");
+const setStatusRoute = require("./routes/setStatusRoute");
+const singleTastRroute = require("./routes/singleTaskRoute");
 
 const app = express();
-// dotenv.config();
+dotenv.config();
 
-// connectDB();
+connectDB();
 
 app.use(express.json());
 
@@ -27,13 +31,10 @@ app.get("/", (req, res) => {
 
 app.use("/api/get-tasks", getAllTasks);
 app.use("/api/create-task", createTaskRoute);
-app.use("/api/update-task", updateTaskRoute);
-
-app.get("/api/task/:id", (req, res) => {
-  console.log(req.params.id);
-
-  res.json({ msg: "single task details" });
-});
+app.use("/api/update-task/", updateTaskRoute);
+app.use("/api/delete-task/", deleteTaskRoute);
+app.use("/api/set-status", setStatusRoute);
+app.use("/api/task/", singleTastRroute);
 
 app.use(notFound);
 app.use(errorHandler);

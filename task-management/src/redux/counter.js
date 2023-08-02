@@ -2,50 +2,10 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
   dltID: null,
-  tasksData: [
-    {
-      id: 1,
-      title: "Abc",
-      description:
-        "Lorem ipsum dolor sit amet consectetur, adipisicing elit. Nobis, temporibus!",
-      status: true,
-    },
-    {
-      id: 2,
-      title: "Abc",
-      description:
-        "Lorem ipsum dolor sit amet consectetur, adipisicing elit. Nobis, temporibus!",
-      status: true,
-    },
-    {
-      id: 3,
-      title: "Abc",
-      description:
-        "Lorem ipsum dolor sit amet consectetur, adipisicing elit. Nobis, temporibus!",
-      status: true,
-    },
-    {
-      id: 4,
-      title: "Abc",
-      description:
-        "Lorem ipsum dolor sit amet consectetur, adipisicing elit. Nobis, temporibus!",
-      status: true,
-    },
-    {
-      id: 5,
-      title: "Abc",
-      description:
-        "Lorem ipsum dolor sit amet consectetur, adipisicing elit. Nobis, temporibus!",
-      status: true,
-    },
-    {
-      id: 6,
-      title: "Abc",
-      description:
-        "Lorem ipsum dolor sit amet consectetur, adipisicing elit. Nobis, temporibus!",
-      status: true,
-    },
-  ],
+  tasksData: [],
+  showTaskList: true,
+  isUpdate: false,
+  updateID: null,
 };
 
 export const counterSlice = createSlice({
@@ -58,6 +18,15 @@ export const counterSlice = createSlice({
     setTasksData: (state, action) => {
       state.tasksData = action.payload;
     },
+    setShowTastList: (state, action) => {
+      state.showTaskList = action.payload;
+    },
+    setIsUpdate: (state, action) => {
+      state.isUpdate = action.payload;
+    },
+    setUpdateID: (state, action) => {
+      state.updateID = action.payload;
+    },
     appendTasksData: (state, action) => {
       state.tasksData = [...state.tasksData, action.payload];
     },
@@ -65,6 +34,13 @@ export const counterSlice = createSlice({
 });
 
 // Action creators are generated for each case reducer function
-export const { setDltId, appendTasksData, setTasksData } = counterSlice.actions;
+export const {
+  setDltId,
+  appendTasksData,
+  setTasksData,
+  setShowTastList,
+  setIsUpdate,
+  setUpdateID,
+} = counterSlice.actions;
 
 export default counterSlice.reducer;

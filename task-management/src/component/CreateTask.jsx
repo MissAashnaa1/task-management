@@ -1,26 +1,52 @@
 import React, { useState } from "react";
-import { useDispatch } from "react-redux";
-import { appendTasksData } from "../redux/counter";
-// import { useLocation, useNavigate } from "react-router-dom";
-// import { CreateNewTodo } from "../services/todoService";
+import { useSelector, useDispatch } from "react-redux";
+import { appendTasksData, setIsUpdate } from "../redux/counter";
 import axios from "axios";
 import toast, { Toaster } from "react-hot-toast";
 
 const CreateTask = () => {
-  // const location = useLocation();
-  // const navigate = useNavigate();
-  // const { email } = location.state;
-  // const [task, setTodo] = useState({
-  //   title: "",
-  //   description: "",
-  //   status: false,
-  // });
   const dispatch = useDispatch();
 
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
+  const { isUpdate, updateID } = useSelector((state) => state.counter);
 
   const handleFormSubmit = async (event) => {
+    event.preventDefault();
+    if (title.trim() === "" || description.trim() === "") {
+      toast.error("Fields can not be empty.");
+      setTitle("");
+      setDescription("");
+
+      return;
+    }
+
+    try {
+      let res = await axios.post("http://localhost:5000/api/create-task", {
+        title,
+        description,
+        status: false,
+      });
+      console.log(res.data);
+      if (res.data.success) {
+        const task = {
+          _id: res.data.task._id,
+          title: res.data.task.title,
+          description: res.data.task.description,
+          status: res.data.task.status,
+        };
+        dispatch(appendTasksData(task));
+        toast.success("Task created.");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+
+    setTitle("");
+    setDescription("");
+  };
+
+  const handleUpdateTask = async (event) => {
     event.preventDefault();
     if (title.trim() === "" || description.trim() === "") {
       toast.error("Fields can not be empty.");
@@ -29,48 +55,34 @@ const CreateTask = () => {
 
       return;
     }
-    const task = {
-      id: Date.now(),
-      title,
-      description,
-      status: false,
-    };
-
-    console.log(task);
-
     try {
-      let res = await axios.post("http://localhost:5000/api/create-task", task);
+      let res = await axios.put(
+        `http://localhost:5000/api/update-task/${updateID}`,
+        {
+          title,
+          description,
+        }
+      );
       console.log(res.data);
+      if (res.data.success) {
+        toast.success("Task updated.");
+      }
     } catch (error) {
       console.log(error);
     }
-    // send to backend
-    dispatch(appendTasksData(task));
-    toast.success("Task created.");
-
-    // if (todo.priority === null) {
-    //   toast.warning("Please select a priority option.");
-    //   return;
-    // }
-    // try {
-    //   await CreateNewTodo(todo);
-    //   navigate(`/home`, { state: { email } });
-    // } catch (error) {
-    //   if (error.response && error.response.data && error.response.data.errors) {
-    //     const {errors} = error.response.data;
-    //     Object.keys(errors).forEach((key) => {
-    //       toast.error(errors[key]);
-    //     });
-    //   }
-    // }
     setTitle("");
     setDescription("");
+    dispatch(setIsUpdate(false));
+    dispatch(setIsUpdate(null));
   };
 
   return (
     <div className="container">
       <div className="fw-bold fs-2 text-center m-4 ">Create Task</div>
-      <form className="w-50 m-auto" onSubmit={handleFormSubmit}>
+      <form
+        className="w-50 m-auto"
+        onSubmit={isUpdate ? handleUpdateTask : handleFormSubmit}
+      >
         <div className="mb-3">
           <label htmlFor="title" className="form-label">
             Title:
@@ -103,7 +115,7 @@ const CreateTask = () => {
 
         <div className="mb-3">
           <button type="submit" className="btn btn-primary">
-            Create Task
+            {isUpdate ? "Update Task" : " Create Task"}
           </button>
         </div>
       </form>

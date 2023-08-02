@@ -1,37 +1,70 @@
 import React, { useEffect } from "react";
 import { Box, Button, WrapItem, Checkbox } from "@chakra-ui/react";
-import { useDispatch } from "react-redux";
-import { setDltId } from "../redux/counter";
+import { useSelector, useDispatch } from "react-redux";
+import {
+  setDltId,
+  setIsUpdate,
+  setShowTastList,
+  setUpdateID,
+} from "../redux/counter";
 
 import { DeleteIcon, EditIcon } from "@chakra-ui/icons";
+
+import axios from "axios";
 
 const TaskItem = ({ task }) => {
   const dispatch = useDispatch();
   const [checked, setChecked] = React.useState(false);
-
-  // apko akele thodi krne dungi apna kam
-  // pure lelena
-  //apko ni arhi na?han yh krdo bnd dadaji k phn k net udadungi fr dantenge
-  // vo to formik se kyanhi krte sth hi backend b to krna aj submit krna
-
-  // >> date: 02Aug
-
-  // edit task ka backend bnne ke bd hoga ache se. 
-  // edit icon pr click krenge to us specific task ki if func se pass hogi aur us id ka title and desc form me aayega
-  // vha se update apii call krni pdegi. 
-
+  const { showTaskList } = useSelector((state) => state.counter);
 
   useEffect(() => {
     setChecked(task.status);
   }, [task.status]);
 
-  const handleDelete = (id) => {
+  const handleDelete = async (id) => {
     dispatch(setDltId(id));
+    console.log(id, "adsfasdff");
+
+    try {
+      let res = await axios.delete(
+        `http://localhost:5000/api/delete-task/${id}`
+      );
+      console.log(res.data);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const handleEdit = async (id) => {
+    // dispatch(setDltId(id));
+    console.log(id, "edit");
+    dispatch(setUpdateID(id));
+    dispatch(setIsUpdate(true));
+    dispatch(setShowTastList(!showTaskList));
+
+    try {
+      let res = await axios.get(`http://localhost:5000/api/delete-task/${id}`);
+      console.log(res.data);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const handleStatus = async (id, status) => {
+    try {
+      let res = await axios.put(`http://localhost:5000/api/set-status/`, {
+        id: id,
+        status: status,
+      });
+      console.log(res.data);
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   return (
     <div
-      id={task.id}
+      id={task._id}
       style={{
         display: "flex",
         flexDirection: "row",
@@ -58,17 +91,17 @@ const TaskItem = ({ task }) => {
       </div>
       <Box display="flex" alignItems="center" justifyContent="center" gap="4">
         <Checkbox
-          // defaultChecked
           size={"lg"}
           isChecked={checked}
           onChange={(e) => {
             setChecked(e.target.checked);
+            handleStatus(task._id, e.target.checked);
           }}
         />
         <WrapItem>
           <Button
             onClick={() => {
-              handleDelete(task.id);
+              handleDelete(task._id);
             }}
             colorScheme="red"
           >
@@ -76,7 +109,12 @@ const TaskItem = ({ task }) => {
           </Button>
         </WrapItem>
         <WrapItem>
-          <Button colorScheme="blue">
+          <Button
+            onClick={() => {
+              handleEdit(task._id);
+            }}
+            colorScheme="blue"
+          >
             <EditIcon />
           </Button>
         </WrapItem>

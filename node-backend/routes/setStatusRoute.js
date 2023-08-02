@@ -3,17 +3,17 @@ const Task = require("../models/taskModel");
 
 const router = express.Router();
 
-router.route("/:id").put(async (req, res) => {
-  console.log(req.body, req.params.id);
+router.route("/").put(async (req, res) => {
+  console.log(req.body);
 
-  let task = await Task.findOne({ _id: req.params.id });
-  // console.log(task, "update route");
+  let task = await Task.findOne({ _id: req.body.id });
+
+  console.log(task, "oen");
+
   if (task) {
-    task.title = req.body.title;
-    task.description = req.body.description;
-
+    task.status = req.body.status;
     const save = await task.save();
-
+    console.log(save, "save");
     if (save) {
       res.json({ success: true, task: save });
     } else {

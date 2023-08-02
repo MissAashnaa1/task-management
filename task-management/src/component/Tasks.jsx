@@ -1,65 +1,31 @@
 import React, { useState, useEffect } from "react";
 import TaskItem from "./TaskItem";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { setTasksData, setIsUpdate } from "../redux/counter";
 import axios from "axios";
 
-// (title, description, status)
-// const tasksData = [
-//   {
-//     id: 1,
-//     title: "Abc",
-//     description:
-//       "Lorem ipsum dolor sit amet consectetur, adipisicing elit. Nobis, temporibus!",
-//     status: true,
-//   },
-//   {
-//     id: 2,
-//     title: "Abc",
-//     description:
-//       "Lorem ipsum dolor sit amet consectetur, adipisicing elit. Nobis, temporibus!",
-//     status: true,
-//   },
-//   {
-//     id: 3,
-//     title: "Abc",
-//     description:
-//       "Lorem ipsum dolor sit amet consectetur, adipisicing elit. Nobis, temporibus!",
-//     status: true,
-//   },
-//   {
-//     id: 4,
-//     title: "Abc",
-//     description:
-//       "Lorem ipsum dolor sit amet consectetur, adipisicing elit. Nobis, temporibus!",
-//     status: true,
-//   },
-//   {
-//     id: 5,
-//     title: "Abc",
-//     description:
-//       "Lorem ipsum dolor sit amet consectetur, adipisicing elit. Nobis, temporibus!",
-//     status: true,
-//   },
-//   {
-//     id: 6,
-//     title: "Abc",
-//     description:
-//       "Lorem ipsum dolor sit amet consectetur, adipisicing elit. Nobis, temporibus!",
-//     status: true,
-//   },
-// ];
 const Tasks = () => {
   const { dltID, tasksData } = useSelector((state) => state.counter);
-  const [tasks, setTasks] = useState(tasksData);
+  // const [tasks, setTasks] = useState(tasksData);
+  const [label, setLabel] = useState("Please wait...");
+
+  const dispatch = useDispatch();
 
   useEffect(() => {
     getTasks();
+    dispatch(setIsUpdate(false));
   }, []);
 
   const getTasks = async () => {
     try {
       let res = await axios.get("http://localhost:5000/api/get-tasks");
-      console.log(res.data);
+      if (res.data.success) {
+        if (res.data.tasks.length === 0) {
+          setLabel("No tasks.");
+        }
+        dispatch(setTasksData(res.data.tasks));
+      } else {
+      }
     } catch (error) {
       console.log(error);
     }
@@ -72,17 +38,24 @@ const Tasks = () => {
   }, [dltID]);
 
   const handleDelete = (id) => {
-    console.log(id, "handle dlt");
-    setTasks(tasks.filter((tasks) => tasks.id !== id));
+    const data = tasksData.filter((tasks) => tasks._id !== id);
+    if (data.length === 0) {
+      setLabel("No tasks.");
+    }
+    dispatch(setTasksData(data));
   };
 
   return (
     <div
       style={{ display: "flex", alignItems: "center", flexDirection: "column" }}
     >
-      {tasks.map((task) => {
-        return <TaskItem key={task.id} task={task} />;
-      })}
+      {tasksData.length > 0 ? (
+        tasksData.map((task) => {
+          return <TaskItem key={task._id} task={task} />;
+        })
+      ) : (
+        <h1>{label}</h1>
+      )}
     </div>
   );
 };
