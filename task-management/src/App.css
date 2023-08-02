@@ -1,3 +1,7 @@
 span{
     font-weight: 700;
 }
+
+.lineThrough{
+    text-decoration: line-through;
+}
