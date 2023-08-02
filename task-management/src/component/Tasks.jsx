@@ -18,7 +18,9 @@ const Tasks = () => {
 
   const getTasks = async () => {
     try {
-      let res = await axios.get("http://localhost:5000/api/get-tasks");
+      let res = await axios.get(
+        "https://node-backend-8meu.onrender.com/api/get-tasks"
+      );
       if (res.data.success) {
         if (res.data.tasks.length === 0) {
           setLabel("No tasks.");

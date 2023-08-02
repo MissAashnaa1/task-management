@@ -27,7 +27,7 @@ const TaskItem = ({ task }) => {
 
     try {
       let res = await axios.delete(
-        `http://localhost:5000/api/delete-task/${id}`
+        `https://node-backend-8meu.onrender.com/api/delete-task/${id}`
       );
       console.log(res.data);
     } catch (err) {
@@ -43,7 +43,9 @@ const TaskItem = ({ task }) => {
     dispatch(setShowTastList(!showTaskList));
 
     try {
-      let res = await axios.get(`http://localhost:5000/api/delete-task/${id}`);
+      let res = await axios.get(
+        `https://node-backend-8meu.onrender.com/api/delete-task/${id}`
+      );
       console.log(res.data);
     } catch (err) {
       console.log(err);
@@ -52,10 +54,13 @@ const TaskItem = ({ task }) => {
 
   const handleStatus = async (id, status) => {
     try {
-      let res = await axios.put(`http://localhost:5000/api/set-status/`, {
-        id: id,
-        status: status,
-      });
+      let res = await axios.put(
+        `https://node-backend-8meu.onrender.com/api/set-status/`,
+        {
+          id: id,
+          status: status,
+        }
+      );
       console.log(res.data);
     } catch (err) {
       console.log(err);

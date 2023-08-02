@@ -22,11 +22,14 @@ const CreateTask = () => {
     }
 
     try {
-      let res = await axios.post("http://localhost:5000/api/create-task", {
-        title,
-        description,
-        status: false,
-      });
+      let res = await axios.post(
+        "https://node-backend-8meu.onrender.com/api/create-task",
+        {
+          title,
+          description,
+          status: false,
+        }
+      );
       console.log(res.data);
       if (res.data.success) {
         const task = {
@@ -57,7 +60,7 @@ const CreateTask = () => {
     }
     try {
       let res = await axios.put(
-        `http://localhost:5000/api/update-task/${updateID}`,
+        `https://node-backend-8meu.onrender.com/api/update-task/${updateID}`,
         {
           title,
           description,
